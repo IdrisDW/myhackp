@@ -1,4 +1,4 @@
-o@raspberrypi:~ $ cat codigo.py
+
 #!/usr/bin/env python3
 import time
 import board
