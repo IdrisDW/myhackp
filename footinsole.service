@@ -1,0 +1,16 @@
+[Unit]
+Description=Foot Insole Bluetooth Sensor Service
+After=network.target bluetooth.target
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+User=luisespejo
+ExecStart=/usr/bin/python3 /home/luisespejo/codigo.py
+Restart=always
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
