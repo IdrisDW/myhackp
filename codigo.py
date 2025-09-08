@@ -17,22 +17,23 @@ adcs = [ADS1115(i2c, address=addr) for addr in (0x48, 0x49, 0x4A, 0x4B)]
 channels = [AnalogIn(adc, i) for adc in adcs for i in range(4)]
 channels = channels[:SENSOR_COUNT]
 
+print(f"Channels initialized: {len(channels)}")
+
 # --- MAIN LOOP ---
-def data_stream(sock):
-    print("Connected to app.")
+def data_received(data):
+    print("Received from Android:", data)
+
     try:
         while True:
             pressures = [min(max(ch.value / 32767, 0), 1) for ch in channels]
             line = ";".join(f"{p:.3f}" for p in pressures) + "\n"
-            sock.send(line.encode())
+            server.send(line)
+            print("Sent:", line.strip())
             time.sleep(READ_INTERVAL)
     except Exception as e:
         print("Connection lost:", e)
 
 print("Bluetooth server listening...")
-server = BluetoothServer(data_stream)
-server.start()
+server = BluetoothServer(data_received)
 
-# Pauses the script until a signal (like Ctrl+C) is received
-# This prevents the script from immediately exiting after starting the server
 pause()
